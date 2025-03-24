@@ -7,9 +7,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchMessages, sendMessageApi } from "../api/chatApi";
 import { importPublicKey, importPrivateKey, signMessage, verifySignature } from "../utils/encryption";
 import axios from "axios";
-import { toast } from "react-toastify";
 
-const socket = io("http://localhost:5000");
+const socket = io(process.env.REACT_APP_API_URL);
 
 const ChatWindow = ({ selectedUser }) => {
     const queryClient = useQueryClient();
@@ -33,7 +32,7 @@ const ChatWindow = ({ selectedUser }) => {
 
     //    Verify Receiver's Public Key
     useEffect(() => {
-        axios.get(`http://localhost:5000/users/${selectedUser.id}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/users/${selectedUser.id}`)
             .then(res => {
                 let backendPublicKey = res.data.publicKey;
                 let gistUrl = res.data.gist_url.replace("gist.github.com", "gist.githubusercontent.com") + "/raw";
@@ -121,7 +120,7 @@ const ChatWindow = ({ selectedUser }) => {
         const getSenderPublicKey = isReceiver
             ? senderPublicKeys[msg.sender_id]
                 ? Promise.resolve(senderPublicKeys[msg.sender_id]) // Use cached key
-                : axios.get(`http://localhost:5000/users/${msg.sender_id}`)
+                : axios.get(`${process.env.REACT_APP_API_URL}/users/${msg.sender_id}`)
                       .then((res) => {
                           const publicKey = res.data.publicKey;
                           setSenderPublicKeys((prev) => ({ ...prev, [msg.sender_id]: publicKey })); // Store in cache
