@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchUsers, logoutApi, fetchUnreadMessages } from "../api/usersApi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUsers } from "../api/usersApi";
+import { useLogout } from "../api/authApi";
 import UsersList from "../components/UsersList";
 import ChatWindow from "../components/ChatWindow";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +15,8 @@ const Home = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    
+    const logoutMutation = useLogout();
+
     // Get current logged-in user
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
@@ -44,14 +46,23 @@ const Home = () => {
             return () => socket.off(`receiveMessage-${currentUser.userId}`);
         }, [ queryClient]);
 
-    const onLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("privateKey");
-        localStorage.removeItem("user");
-
-        // Redirect to Sign-In Page
-        navigate("/signin");
-    };
+        const onLogout = () => {
+            logoutMutation.mutate(null, {
+                onSuccess: () => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("privateKey");
+                    localStorage.removeItem("user");
+                    navigate("/signin");
+                },
+                onError: () => {
+                    toast.error("Logout failed from Backend");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("privateKey");
+                    localStorage.removeItem("user");
+                    navigate("/signin");
+                },
+            });
+        };
 
     if (isLoading) return <div>Loading users...</div>;
     if (error) return <div>Error loading users: {error.message}</div>;

@@ -13,8 +13,5 @@ export const fetchUserPublicKey = async (userId) => {
 
 export const fetchUnreadMessages = async (userId) => {
     const res = await axiosInstanceWithToken.get(`/messages/unread/${userId}`);
-    console.log("RES",res.data)
-    return res.data; // Returns { sender_id: unread_count, sender_id: unread_count, ... }
+    return res.data;
 };
-// Logout API (if needed)
-// export const logoutApi = () => axios.post("http://localhost:5000/logout");

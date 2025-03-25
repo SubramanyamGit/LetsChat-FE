@@ -1,21 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { axiosInstance } from "./axiosInstance";
+import { axiosInstance,axiosInstanceWithToken } from "./axiosInstance";
 
-// Signup API
-export const useSignup = () => {
-    return useMutation({
-        mutationFn: (userData) => axiosInstance.post("/sign_up", userData),
-    });
-};
-
-// Signin API
-export const useSignin = () => {
-    return useMutation({
-        mutationFn: (loginData) => axiosInstance.post("/sign_in", loginData),
-    });
-};
-
-// OAuth API (Google/GitHub)
+// OAuth API (Google)
 export const useOAuthSignin = (provider) => {
     return useMutation({
         mutationFn: (tokenData) => axiosInstance.post(`/sign_in/auth/${provider}`, tokenData),
@@ -26,5 +12,12 @@ export const useOAuthSignin = (provider) => {
 export const useOAuthSignup = (provider) => {
     return useMutation({
         mutationFn: (tokenData) => axiosInstance.post(`/sign_up/auth/${provider}`, tokenData),
+    });
+};
+
+// Logout API
+export const useLogout = () => {
+    return useMutation({
+        mutationFn: () => axiosInstanceWithToken.post("/logout"),
     });
 };

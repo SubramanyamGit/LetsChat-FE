@@ -1,5 +1,4 @@
 import axios from "axios";
-console.log(" process.env.REACT_APP_API_URL", process.env.REACT_APP_API_URL)
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   timeout: 5000,
@@ -19,7 +18,9 @@ export const axiosInstanceWithToken = axios.create({
   },
 });
 
-const token = localStorage.getItem("token");
-axiosInstanceWithToken.defaults.headers.common[
-  "Authorization"
-] = `Bearer ${token}`;
+export const setTokenToHeader = (token) =>{
+  axiosInstanceWithToken.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${token}`;
+}
+

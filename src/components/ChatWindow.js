@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchMessages, sendMessageApi } from "../api/chatApi";
 import { importPublicKey, importPrivateKey, signMessage, verifySignature } from "../utils/encryption";
 import axios from "axios";
+import { axiosInstanceWithToken } from "../api/axiosInstance";
 
 const socket = io(process.env.REACT_APP_API_URL);
 
@@ -32,7 +33,7 @@ const ChatWindow = ({ selectedUser }) => {
 
     //    Verify Receiver's Public Key
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/users/${selectedUser.id}`)
+        axiosInstanceWithToken.get(`${process.env.REACT_APP_API_URL}/users/${selectedUser.id}`)
             .then(res => {
                 let backendPublicKey = res.data.publicKey;
                 let gistUrl = res.data.gist_url.replace("gist.github.com", "gist.githubusercontent.com") + "/raw";
@@ -61,15 +62,7 @@ const ChatWindow = ({ selectedUser }) => {
         enabled: keysMatch !== null && keysMatch,
     });
 
-    // useEffect(() => {
-    //     socket.on(`receiveMessage-${currentUser.userId}`, ({name}) => {
-    //         toast.info(`New Message From ${name}`)
-    //         queryClient.invalidateQueries(["messages", selectedUser.id]);
-    //         queryClient.invalidateQueries(["unreadMessages", currentUser.userId]);
-    //     });
 
-    //     return () => socket.off(`receiveMessage-${currentUser.userId}`);
-    // }, [selectedUser.id, queryClient]);
 
     //    Encrypt, Sign, and Send Message
     const encryptAndSignMessage = (message, receiverPublicKeyBase64) => {

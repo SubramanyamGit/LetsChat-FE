@@ -4,6 +4,7 @@ import { useOAuthSignin } from "../api/authApi";
 import { Container, Alert, Button } from "react-bootstrap";
 import { GoogleLogin } from "@react-oauth/google";
 import CryptoJS from "crypto-js";
+import { setTokenToHeader } from "../api/axiosInstance";
 
 const Signin = () => {
     const navigate = useNavigate();
@@ -74,7 +75,6 @@ const Signin = () => {
             
             try {
                 // Decrypt stored key
-                console.log(email)
                 const decryptedBytes = CryptoJS.AES.decrypt(encryptedKey, privateKeyPassword);
                 privateKeyBase64 = decryptedBytes.toString(CryptoJS.enc.Utf8);
     
@@ -151,9 +151,9 @@ const Signin = () => {
 
         googleSigninMutation.mutate({ token: credential, email }, {
             onSuccess: (data) => {
-                console.log("DATA", data);
                 localStorage.setItem("token", data.data.token);
                 localStorage.setItem("user", JSON.stringify(data.data.userData));
+                setTokenToHeader(data.data.token)
                 handlePrivateKeyRetrieval(email);
             },
             onError: () => setMessage("Google Sign-In failed"),
