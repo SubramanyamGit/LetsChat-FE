@@ -5,6 +5,7 @@ import { fetchUsers } from "../api/usersApi";
 import { useLogout } from "../api/authApi";
 import UsersList from "../components/UsersList";
 import ChatWindow from "../components/ChatWindow";
+import InactivityTimer from "../components/InactivityTimer";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
@@ -71,6 +72,7 @@ const Home = () => {
 
     return (
         <Container>
+             <InactivityTimer onLogout={onLogout} />
             <div className="d-flex justify-content-between align-items-center">
                 <h2> Let's Chat</h2>
                 <Button variant="danger" onClick={onLogout}>Logout</Button>
