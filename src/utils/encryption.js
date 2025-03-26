@@ -12,39 +12,16 @@ export const importPublicKey = (publicKeyBase64) => {
             )
             .then(resolve)
             .catch((error) => {
-                console.error("🔴 Public Key Import Error:", error);
+                console.error("   Public Key Import Error:", error);
                 reject(error);
             });
         } catch (error) {
-            console.error("🔴 Public Key Import Error:", error);
+            console.error("   Public Key Import Error:", error);
             reject(error);
         }
     });
 };
 
-// export const importPublicKeyDecrypt = (publicKeyBase64) => {
-//     return new Promise((resolve, reject) => {
-//         try {
-//             const binaryDer = Uint8Array.from(atob(publicKeyBase64), (c) => c.charCodeAt(0));
-
-//             window.crypto.subtle.importKey(
-//                 "pkcs8",
-//                 binaryDer.buffer,
-//                 { name: "RSA-PSS", hash: "SHA-256" },
-//                 true,
-//                 ["decrypt"]
-//             )
-//             .then(resolve)
-//             .catch((error) => {
-//                 console.error("🔴 Public Key Import Error:", error);
-//                 reject(error);
-//             });
-//         } catch (error) {
-//             console.error("🔴 Public Key Import Error:", error);
-//             reject(error);
-//         }
-//     });
-// };
 
 export const importPrivateKey = (privateKeyBase64) => {
     return new Promise((resolve, reject) => {
@@ -60,11 +37,11 @@ export const importPrivateKey = (privateKeyBase64) => {
             )
             .then(resolve)
             .catch((error) => {
-                console.error("🔴 Private Key Import Error:", error);
+                console.error("   Private Key Import Error:", error);
                 reject(error);
             });
         } catch (error) {
-            console.error("🔴 Private Key Import Error:", error);
+            console.error("   Private Key Import Error:", error);
             reject(error);
         }
     });
@@ -84,11 +61,11 @@ export const importSigningPrivateKey = (privateKeyBase64) => {
             )
             .then(resolve)
             .catch((error) => {
-                console.error("🔴 Signing Private Key Import Error:", error);
+                console.error("   Signing Private Key Import Error:", error);
                 reject(null);
             });
         } catch (error) {
-            console.error("🔴 Signing Private Key Import Error:", error);
+            console.error("   Signing Private Key Import Error:", error);
             reject(null);
         }
     });
@@ -108,11 +85,11 @@ export const importSigningPublicKey = (publicKeyBase64) => {
             )
             .then(resolve)
             .catch((error) => {
-                console.error("🔴 Signing Public Key Import Error:", error);
+                console.error("   Signing Public Key Import Error:", error);
                 reject(null);
             });
         } catch (error) {
-            console.error("🔴 Signing Public Key Import Error:", error);
+            console.error("   Signing Public Key Import Error:", error);
             reject(null);
         }
     });
@@ -133,7 +110,7 @@ export const signMessage = (message, privateKeyBase64) => {
             return btoa(String.fromCharCode(...new Uint8Array(signature))); // Convert signature to Base64
         })
         .catch((error) => {
-            console.error("🔴 Signing Error:", error);
+            console.error("   Signing Error:", error);
             return null;
         });
 };
@@ -153,71 +130,7 @@ export const verifySignature = (message, signatureBase64, senderPublicKeyBase64)
             );
         })
         .catch((error) => {
-            console.error("🔴 Signature Verification Error:", error);
+            console.error("   Signature Verification Error:", error);
             return false; // Verification failed
         });
 };
-
-
-// export const importPrivateKeyEncrypt = (privateKeyBase64) => {
-//     return new Promise((resolve, reject) => {
-//         try {
-//             const binaryDer = Uint8Array.from(atob(privateKeyBase64), (c) => c.charCodeAt(0));
-
-//             window.crypto.subtle.importKey(
-//                 "spki",
-//                 binaryDer.buffer,
-//                 { name: "RSA-PSS", hash: "SHA-256" },
-//                 true,
-//                 ["encrypt"]
-//             )
-//             .then(resolve)
-//             .catch((error) => {
-//                 console.error("🔴 Private Key Import Error:", error);
-//                 reject(error);
-//             });
-//         } catch (error) {
-//             console.error("🔴 Private Key Import Error:", error);
-//             reject(error);
-//         }
-//     });
-// };
-
-// //    Signing Function
-// export const signMessage = (message, privateKeyBase64) => {
-//     return importPublicKeyDecrypt(privateKeyBase64)
-//         .then((privateKey) => {
-//             const encodedMessage = new TextEncoder().encode(message);
-//             return window.crypto.subtle.sign(
-//                 { name: "RSA-PSS", saltLength: 32 },
-//                 privateKey,
-//                 encodedMessage
-//             );
-//         })
-//         .then((signature) => {
-//             return btoa(String.fromCharCode(...new Uint8Array(signature)));
-//         })
-//         .catch((error) => {
-//             console.error("🔴 Signing Error:", error);
-//             return null;
-//         });
-// };
-
-// //    Signature Verification
-// export const verifySignature = (message, signatureBase64, publicKeyBase64) => {
-//     return importPublicKey(publicKeyBase64)
-//         .then((publicKey) => {
-//             const signatureBytes = Uint8Array.from(atob(signatureBase64), (c) => c.charCodeAt(0));
-//             const encodedMessage = new TextEncoder().encode(message);
-//             return window.crypto.subtle.verify(
-//                 { name: "RSA-PSS", saltLength: 32 },
-//                 publicKey,
-//                 signatureBytes,
-//                 encodedMessage
-//             );
-//         })
-//         .catch((error) => {
-//             console.error("🔴 Signature Verification Error:", error);
-//             return false;
-//         });
-// };

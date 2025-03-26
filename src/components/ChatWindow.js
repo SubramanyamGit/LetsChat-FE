@@ -6,8 +6,8 @@ import { Form, Button, Alert } from "react-bootstrap";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchMessages, sendMessageApi } from "../api/chatApi";
 import { importPublicKey, importPrivateKey, signMessage, verifySignature } from "../utils/encryption";
-import axios from "axios";
 import { axiosInstanceWithToken } from "../api/axiosInstance";
+import axios from "axios";
 
 const socket = io(process.env.REACT_APP_API_URL);
 
@@ -97,7 +97,7 @@ const ChatWindow = ({ selectedUser }) => {
             });
         })
         .catch(error => {
-            console.error("🔴 Encryption/Signing Error:", error);
+            console.error("   Encryption/Signing Error:", error);
             return null;
         });
     };
@@ -113,7 +113,7 @@ const ChatWindow = ({ selectedUser }) => {
         const getSenderPublicKey = isReceiver
             ? senderPublicKeys[msg.sender_id]
                 ? Promise.resolve(senderPublicKeys[msg.sender_id]) // Use cached key
-                : axios.get(`${process.env.REACT_APP_API_URL}/users/${msg.sender_id}`)
+                : axiosInstanceWithToken.get(`${process.env.REACT_APP_API_URL}/users/${msg.sender_id}`)
                       .then((res) => {
                           const publicKey = res.data.publicKey;
                           setSenderPublicKeys((prev) => ({ ...prev, [msg.sender_id]: publicKey })); // Store in cache
@@ -126,11 +126,11 @@ const ChatWindow = ({ selectedUser }) => {
                 if (isReceiver && senderPublicKey) {
                     return verifySignature(msg.encrypted_for_receiver, msg.signature, senderPublicKey);
                 }
-                return true; // If sender, assume message is valid
+                return true; 
             })
             .then((isValid) => {
                 if (!isValid) {
-                    throw new Error("⚠️ Signature verification failed! Message may be tampered with.");
+                    throw new Error("  Signature verification failed! Message may be tampered with.");
                 }
     
                 return importPrivateKey(privateKey)
@@ -147,7 +147,7 @@ const ChatWindow = ({ selectedUser }) => {
                 return { decryptedMessage, isValid: true };
             })
             .catch(() => {
-                return { decryptedMessage: "⚠️ Message verification failed!", isValid: false };
+                return { decryptedMessage: "Message verification failed!", isValid: false };
             });
     }, [privateKey, currentUser.userId, senderPublicKeys]);
     
@@ -159,7 +159,7 @@ const ChatWindow = ({ selectedUser }) => {
             messages.map((msg) =>
                 decryptAndVerifyMessage(msg).then(({ decryptedMessage, isValid }) => ({
                     ...msg,
-                    decrypted_message: isValid ? decryptedMessage : "⚠️ Message verification failed!"
+                    decrypted_message: isValid ? decryptedMessage : "  Message verification failed!"
                 }))
             )
         ).then((decrypted) => setDecryptedMessages(decrypted));
@@ -211,7 +211,6 @@ const ChatWindow = ({ selectedUser }) => {
 
     return (
         <div style={{ padding: "0 10px", border: "1px solid gray", height: "500px", overflow: "hidden" }}>
-        {/*    Sticky Header with Contact Name */}
         <div style={{
             position: "sticky",
             top: 0,
@@ -247,7 +246,6 @@ const ChatWindow = ({ selectedUser }) => {
                     <div ref={messagesEndRef} />
                 </div>
     
-                {/*    Input and Send Button in One Line */}
                 <Form className="mt-3" onSubmit={handleSendMessage} style={{ display: "flex", gap: "10px",marginBottom:"5px" }}>
                     <Form.Control
                         type="text"

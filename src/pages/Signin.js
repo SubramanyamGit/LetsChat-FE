@@ -81,10 +81,8 @@ const Signin = () => {
                 if (!privateKeyBase64) throw new Error("Decryption failed");
     
                 localStorage.setItem("privateKey", privateKeyBase64);
-                console.log("   Private Key Decrypted & Stored in localStorage");
                 navigate("/home"); // Navigate only after successful decryption
             } catch (error) {
-                console.error("  Error decrypting private key:", error);
                 alert("Failed to decrypt private key! Check password.");
             }
         }
@@ -110,15 +108,9 @@ const Signin = () => {
 
         const passwordForKey = prompt("Set a password to encrypt your private key:");
         if (!passwordForKey) return alert("Private key password required!");
-        console.log(privateKey)
                 const encryptedPrivateKey = CryptoJS.AES.encrypt(privateKey, passwordForKey).toString();
     
         try {
-            // const db = await initializeIndexedDB();
-            // const tx = db.transaction("keys", "readwrite");
-            // const store = tx.objectStore("keys");
-            // store.put({ id: email, key: encryptedPrivateKey });
-            // console.log("UPDALOD")
             const db = window.indexedDB.open("SecureChatDB", 1);
                 db.onupgradeneeded = () => {
                     const store = db.result.createObjectStore("keys", { keyPath: "id" });
@@ -131,7 +123,6 @@ const Signin = () => {
             alert("Private key uploaded and stored securely!");
             setShowUploadButton(false);
             handlePrivateKeyRetrieval(email)
-            // setMessage("Private key stored successfully! You can now sign in.");
         } catch (error) {
             console.error("  Error storing private key:", error);
         }
@@ -180,44 +171,3 @@ const Signin = () => {
 export default Signin;
 
 
-
-// const handlePrivateKeyRetrieval = (email) => {
-    //         const privateKeyPassword = prompt("Enter your private key password:");
-    //         if (!privateKeyPassword) return alert("Private key password required!");
-        
-    //         // Retrieve & Decrypt Private Key from IndexedDB
-    //         const db = window.indexedDB.open("SecureChatDB", 1);
-        
-    //         db.onsuccess = () => {
-    //             const dbInstance = db.result;
-    //             const tx = dbInstance.transaction("keys", "readonly");
-    //             const store = tx.objectStore("keys");
-    //             const request = store.get(email);
-        
-    //             request.onsuccess = () => {
-    //                 if (request.result) {
-    //                     try {
-    //                         // Decrypt stored key
-    //                         const decryptedBytes = CryptoJS.AES.decrypt(request.result.key, privateKeyPassword);
-    //                         const privateKeyBase64 = decryptedBytes.toString(CryptoJS.enc.Utf8);
-        
-    //                         if (!privateKeyBase64) throw new Error("Decryption failed");
-        
-    //                         localStorage.setItem("privateKey", privateKeyBase64);
-    //                         console.log("   Private Key Decrypted & Stored in localStorage");
-        
-    //                     } catch (error) {
-    //                         console.error("  Error decrypting private key:", error);
-    //                         alert("Failed to decrypt private key! Check password.");
-    //                     }
-    //                 } else {
-    //                     alert("No private key found for this email!");
-    //                 }
-    //             };
-        
-    //             request.onerror = () => {
-    //                 console.error("  Error retrieving private key from IndexedDB");
-    //             };
-    //         };
-    //     };
-        
