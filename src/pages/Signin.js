@@ -147,12 +147,13 @@ const Signin = () => {
                 setTokenToHeader(data.data.token)
                 handlePrivateKeyRetrieval(email);
             },
-            onError: () => setMessage("Google Sign-In failed"),
+            onError: (error) => setMessage(error.response.data.error),
         });
     };
 
     return (
         <Container className="mt-5">
+            <h2 className="mb-5">Let's Chat</h2>
             <h2>Sign In</h2>
             {message && <Alert variant="info">{message}</Alert>}
             <GoogleLogin onSuccess={handleGoogleSignin} onError={() => setMessage("Google Login Failed")} />

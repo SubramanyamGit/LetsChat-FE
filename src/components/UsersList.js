@@ -1,11 +1,24 @@
-import React from "react";
-import { ListGroup, Badge } from "react-bootstrap";
+import React, { useState } from "react";
+import { ListGroup, Form } from "react-bootstrap";
 
 const UsersList = ({ users, onSelectUser }) => {
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredUsers = users.filter((user) =>
+        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <ListGroup>
-            {users.map((user) => {
-                return (
+        <>
+            <Form.Control
+                type="text"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="mb-2"
+            />
+            <ListGroup>
+                {filteredUsers.map((user) => (
                     <ListGroup.Item
                         key={user.id}
                         onClick={() => onSelectUser(user)}
@@ -14,9 +27,9 @@ const UsersList = ({ users, onSelectUser }) => {
                     >
                         {user.full_name}
                     </ListGroup.Item>
-                );
-            })}
-        </ListGroup>
+                ))}
+            </ListGroup>
+        </>
     );
 };
 

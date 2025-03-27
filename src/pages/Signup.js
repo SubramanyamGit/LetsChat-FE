@@ -92,6 +92,7 @@ const Signup = () => {
     
     return (
         <Container className="mt-5">
+            <h2 className="mb-5">Let's Chat</h2>
             <h2>Sign Up</h2>
             {message && <Alert variant="info">{message}</Alert>}
             <GoogleLogin onSuccess={handleGoogleSignup} onError={() => setMessage("Google Login Failed")} text='signup_with' />
